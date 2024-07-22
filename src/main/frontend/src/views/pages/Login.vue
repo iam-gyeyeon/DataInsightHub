@@ -8,14 +8,15 @@
               <CCardBody>
                 <CForm>
                   <h1>Login</h1>
-                  <p class="text-body-secondary">Sign In to your account</p>
+                  <p class="text-body-secondary">로그인 해주세요.</p>
                   <CInputGroup class="mb-3">
                     <CInputGroupText>
                       <CIcon icon="cil-user" />
                     </CInputGroupText>
                     <CFormInput
-                      placeholder="Username"
-                      autocomplete="username"
+                      v-model="user.id"
+                      placeholder="ID"
+                      autocomplete="ID"
                     />
                   </CInputGroup>
                   <CInputGroup class="mb-4">
@@ -23,6 +24,7 @@
                       <CIcon icon="cil-lock-locked" />
                     </CInputGroupText>
                     <CFormInput
+                      v-model="user.password"
                       type="password"
                       placeholder="Password"
                       autocomplete="current-password"
@@ -30,11 +32,11 @@
                   </CInputGroup>
                   <CRow>
                     <CCol :xs="6">
-                      <CButton color="primary" class="px-4"> Login </CButton>
+                      <CButton @click="login" color="primary" class="px-4"> Login </CButton>
                     </CCol>
                     <CCol :xs="6" class="text-right">
                       <CButton color="link" class="px-0">
-                        Forgot password?
+                        비밀번호를 잊으셨나요?
                       </CButton>
                     </CCol>
                   </CRow>
@@ -51,7 +53,7 @@
                     aliqua.
                   </p>
                   <CButton color="light" variant="outline" class="mt-3">
-                    Register Now!
+                    회원 가입
                   </CButton>
                 </div>
               </CCardBody>
@@ -62,3 +64,22 @@
     </CContainer>
   </div>
 </template>
+<script>
+export default {
+
+  data(){
+    return {
+      user:{
+        id: null, 
+        password: null
+      }
+    }
+    
+  },
+  methods:{
+    login(){
+      console.log('click login button', this.user.id, this.user.password)
+    }
+  }
+}
+</script>
