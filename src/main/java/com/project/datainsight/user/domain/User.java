@@ -31,4 +31,8 @@ public class User {
         this.password = userRequest.getPassword();
     }
 
+    public void updateFromRequest(UserRequest userRequest){
+        this.userName = userRequest.getUsername();
+    }
+
 }

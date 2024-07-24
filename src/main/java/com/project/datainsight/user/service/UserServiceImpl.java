@@ -36,16 +36,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse checkUser(UserRequest userRequest) {
-        User checkUser = new User(userRequest);
-        User resultUser = userRepository.findByUserId(checkUser.getUserId());
+    public UserResponse checkUser(String userId) {
+        User resultUser = userRepository.findByUserId(userId);
+        if(resultUser == null) { return null; }
 
         return new UserResponse(resultUser);
     }
 
     @Override
-    public UserResponse modifyUser(UserRequest user) {
-        return null;
+    public UserResponse modifyUser(String userId, UserRequest user) {
+        User findUser = userRepository.findByUserId(userId);
+        if(findUser == null) { return null; }
+
+        findUser.updateFromRequest(user);
+        User resultUser = userRepository.save(findUser);
+
+        return new UserResponse(resultUser);
     }
 
     @Override

@@ -10,10 +10,10 @@ public interface UserService {
     public UserResponse registUser(UserRequest user);
 
     //중복회원 확인
-    public UserResponse checkUser(UserRequest user);
+    public UserResponse checkUser(String userId);
 
     //회원수정
-    public UserResponse modifyUser(UserRequest user);
+    public UserResponse modifyUser(String userId, UserRequest user);
 
     //회원삭제
     public UserResponse removeUser(String id);
