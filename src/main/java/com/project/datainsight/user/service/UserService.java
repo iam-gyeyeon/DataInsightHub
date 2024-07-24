@@ -9,6 +9,9 @@ public interface UserService {
     //회원가입
     public UserResponse registUser(UserRequest user);
 
+    //중복회원 확인
+    public UserResponse checkUser(UserRequest user);
+
     //회원수정
     public UserResponse modifyUser(UserRequest user);
 

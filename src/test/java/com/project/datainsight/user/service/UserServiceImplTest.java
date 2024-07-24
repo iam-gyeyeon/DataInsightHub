@@ -35,4 +35,19 @@ class UserServiceImplTest {
         Assertions.assertThat(user.getId()).isEqualTo("admin");
     }
 
+    @Test
+    void registUserFail(){
+        //given
+        UserRequest userRequest = new UserRequest();
+        userRequest.setUsername("admin");
+        userRequest.setPassword("admin");
+        userRequest.setId("admin");
+
+        //when
+        UserResponse user = userService.registUser(userRequest);
+        //then
+        Assertions.assertThat(user).isNotNull();
+        Assertions.assertThat(user.getId()).isEqualTo("admin");
+    }
+
 }
