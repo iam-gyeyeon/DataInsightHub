@@ -8,6 +8,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.Cipher;
+import java.security.*;
+import java.util.Base64;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -20,20 +24,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse registUser(UserRequest requestUser) {
+    public UserResponse registUser(UserRequest requestUser) throws Exception {
+        // RSA 키 쌍 생성
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        KeyPair keyPair = keyPairGenerator.generateKeyPair();
+        PublicKey publicKey = keyPair.getPublic();
+
         User registUser = new User(requestUser);
 
-        //중복 확인
+        // 중복 확인
         User checkUser = userRepository.findByUserId(registUser.getUserId());
-
         if (checkUser != null && checkUser.getUserId().equals(registUser.getUserId())) {
             logger.debug("User with userId {} already exists", registUser.getUserId());
             return null;
         }
-        User resultUser = userRepository.save(registUser);
 
+        String password = encryptPassword(requestUser.getPassword(), publicKey, 80);
+        registUser.setPassword(password);
+
+        User resultUser = userRepository.save(registUser);
        return new UserResponse(resultUser);
     }
+    private String encryptPassword(String password, PublicKey publicKey, int length) throws Exception {
+        Cipher cipher = Cipher.getInstance("RSA");
+        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+        byte[] encryptedData = cipher.doFinal(password.getBytes());
+        String encryptedString = Base64.getEncoder().encodeToString(encryptedData);
+        return encryptedString.substring(0, Math.min(length, encryptedString.length()));
+    }
+
 
     @Override
     public UserResponse checkUser(String userId) {
@@ -56,6 +76,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse removeUser(String id) {
-        return null;
+        User findUser = userRepository.findByUserId(id);
+        if(findUser == null) { return null; }
+
+        userRepository.delete(findUser);
+        return new UserResponse(findUser);
     }
+
 }

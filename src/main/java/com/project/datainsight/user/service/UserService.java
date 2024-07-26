@@ -4,10 +4,12 @@ import com.project.datainsight.user.domain.User;
 import com.project.datainsight.user.dto.UserRequest;
 import com.project.datainsight.user.dto.UserResponse;
 
+import java.security.NoSuchAlgorithmException;
+
 public interface UserService {
 
     //회원가입
-    public UserResponse registUser(UserRequest user);
+    public UserResponse registUser(UserRequest user) throws Exception;
 
     //중복회원 확인
     public UserResponse checkUser(String userId);

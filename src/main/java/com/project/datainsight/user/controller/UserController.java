@@ -26,7 +26,7 @@ public class UserController {
 
 
     @PostMapping("/join")
-    public ResponseEntity<?> joinUser(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<?> joinUser(@RequestBody UserRequest userRequest) throws Exception {
         String MESSAGE = "";
         UserResponse response = userService.registUser(userRequest);
         MESSAGE = response == null ? USER_ALREADY_REGISTERED.getMessage() : USER_REGISTERED_SUCCESS.getMessage();
@@ -47,6 +47,14 @@ public class UserController {
         String MESSAGE = "";
         UserResponse response = userService.modifyUser(userId, userRequest);
         MESSAGE = response == null ? USER_NOT_FOUND.getMessage() : USER_MODIFIED_SUCCESS.getMessage();
+        return createResponse(MESSAGE, response);
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable String userId){
+        String MESSAGE = "";
+        UserResponse response = userService.removeUser(userId);
+        MESSAGE = response == null ? USER_NOT_FOUND.getMessage() : USER_DELETED_SUCCESS.getMessage();
         return createResponse(MESSAGE, response);
     }
 
