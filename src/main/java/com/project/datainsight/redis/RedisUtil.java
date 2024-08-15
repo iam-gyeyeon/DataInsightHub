@@ -18,12 +18,12 @@ public class RedisUtil {
         valueOperations.set(key, value, timeout, MILLISECONDS);
     }
 
-    public String getValue(String key) {
+    public String getData(String key) {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         return valueOperations.get(key);
     }
 
-    public void deleteData(String key) {
+    public void removeData(String key) {
         redisTemplate.delete(key);
     }
 }
