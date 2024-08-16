@@ -1,10 +1,7 @@
 package com.project.datainsight.user.service;
 
-import com.project.datainsight.user.domain.User;
 import com.project.datainsight.user.dto.UserRequest;
 import com.project.datainsight.user.dto.UserResponse;
-
-import java.security.NoSuchAlgorithmException;
 
 public interface UserService {
 

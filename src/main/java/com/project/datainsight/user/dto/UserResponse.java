@@ -1,6 +1,6 @@
 package com.project.datainsight.user.dto;
 
-import com.project.datainsight.user.domain.User;
+import com.project.datainsight.user.dao.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

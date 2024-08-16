@@ -1,4 +1,4 @@
-package com.project.datainsight.user.domain;
+package com.project.datainsight.user.dao;
 
 
 import com.project.datainsight.user.dto.UserRequest;

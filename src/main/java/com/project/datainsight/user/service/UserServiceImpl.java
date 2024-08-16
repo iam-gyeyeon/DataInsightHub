@@ -1,36 +1,32 @@
 package com.project.datainsight.user.service;
 
+import com.project.datainsight.redis.RedisUtil;
 import com.project.datainsight.security.RSAUtil;
-import com.project.datainsight.user.domain.User;
+import com.project.datainsight.user.dao.User;
 import com.project.datainsight.user.dto.UserRequest;
 import com.project.datainsight.user.dto.UserResponse;
 import com.project.datainsight.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.Cipher;
 import java.security.*;
-import java.util.Base64;
-
-import static com.project.datainsight.security.RSAUtil.*;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
-
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final RedisUtil redis;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserResponse registUser(UserRequest requestUser) throws Exception {
-        // RSA 키 쌍 생성
-        KeyPair keyPair = generateKeyPair(2048);
-        PublicKey publicKey = keyPair.getPublic();
 
         User registUser = new User(requestUser);
 
@@ -41,11 +37,34 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        String password = encryptPassword(requestUser.getPassword(), publicKey, 80);
-        registUser.setPassword(password);
+        //비밀번호 암호화
+        registUser.setPassword(encryptPassword(registUser.getPassword()));
 
         User resultUser = userRepository.save(registUser);
        return new UserResponse(resultUser);
+    }
+
+    private String encryptPassword(String password) {
+        //추후 salt key 추가
+        return passwordEncoder.encode(password);
+    }
+
+    private PublicKey initKey(){
+
+        String uuid = UUID.randomUUID().toString();
+        KeyPair generator = null;
+        PublicKey publicKey = null;
+        PrivateKey privateKey = null;
+        try{
+            generator = RSAUtil.generateKeyPair(1024);
+            publicKey = generator.getPublic();
+            privateKey = generator.getPrivate();
+
+            redis.setData(uuid, privateKey.toString(), 1000);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return publicKey;
     }
 
 
@@ -54,7 +73,6 @@ public class UserServiceImpl implements UserService {
     public UserResponse checkUser(String userId) {
         User resultUser = userRepository.findByUserId(userId);
         if(resultUser == null) { return null; }
-
         return new UserResponse(resultUser);
     }
 
