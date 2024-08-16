@@ -78,7 +78,14 @@ export default {
   },
   methods:{
     login(){
-      console.log('click login button', this.user.id, this.user.password)
+      console.log('click login button', this.user.id, this.user.password);
+
+      try{
+        const response = this.$axios.post("/api/login");
+        this.data = response.data;
+      }catch(error){
+        console.error('Error fetching Data', error);
+      }
     }
   }
 }
