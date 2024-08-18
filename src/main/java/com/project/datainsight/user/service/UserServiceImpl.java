@@ -49,26 +49,6 @@ public class UserServiceImpl implements UserService {
         return passwordEncoder.encode(password);
     }
 
-    private PublicKey initKey(){
-
-        String uuid = UUID.randomUUID().toString();
-        KeyPair generator = null;
-        PublicKey publicKey = null;
-        PrivateKey privateKey = null;
-        try{
-            generator = RSAUtil.generateKeyPair(1024);
-            publicKey = generator.getPublic();
-            privateKey = generator.getPrivate();
-
-            redis.setData(uuid, privateKey.toString(), 1000);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return publicKey;
-    }
-
-
-
     @Override
     public UserResponse checkUser(String userId) {
         User resultUser = userRepository.findByUserId(userId);
